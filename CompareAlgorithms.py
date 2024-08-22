@@ -101,16 +101,21 @@ class CompareAlgorithms:
     
 
 if __name__ == '__main__':
-  logging_level='INFO'
+
+  ##################################################
+  # UPDATE THIS IF NEEDED TO REDUCE RUN TIME: 
+  # #Number of trials to perform
+  n_trials = 50
+
+  # Maximum number of nodes to traverse for brute force (random) search algorithm 
+  max_nodes = 1000000
+
+  ##################################################
 
   # Number of tree nodes
   tree_size = 10000
 
-  # Number of trials to perform
-  n_trials = 100
-
-  # Maximum number of nodes to traverse for brute force (random) search algorithm 
-  max_nodes = 1000000000 
+  logging_level='INFO'
 
   comparator = CompareAlgorithms(
     tree_size=tree_size,
