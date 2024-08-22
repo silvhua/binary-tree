@@ -227,57 +227,6 @@ Right child value: {node.right.value if node.right else None}.
   """
   print(message)
 
-def get_list_of_unique_numbers(n_elements):
-  max_value = n_elements * 5
-  possible_values = [value for value in range(max_value)]
-  result = []
-  for index in range(n_elements):
-    random_element = choice(possible_values)
-    result.append(random_element)
-    possible_values.remove(random_element)
-  return result
-
-def time_search(target, strategy, tree, max_nodes=None, logging_level='INFO', show_log=True):
-  logger = Custom_Logger(f'{strategy}_logger', level=logging_level)
-  tree.value_present[target] = False
-  start_time = time()
-  search_result = tree.contains_value(
-    target, strategy, max_nodes=max_nodes, show_log=False
-  )
-  elapsed_time = time() - start_time
-  if search_result:
-    message = f'\nElapsed time for search: {elapsed_time}.'
-  else:
-    message = f'\nFailed to find {target} using "{strategy}" algorithm.'
-    # If target value is not found, make elapsed time larger so it always ranks last compared with other algorithms
-    elapsed_time += 999 
-  if show_log:
-    logger.info(message)
-  return elapsed_time 
-
-def compare_search_algorithms(tree_size):
-  logger = Custom_Logger(f'compare_search_algorithms_logger', level='INFO')
-  messages = []
-  tree_elements = get_list_of_unique_numbers(tree_size)
-  tree = Tree(tree_elements[0], logging_level='INFO')
-  for element in tree_elements[1:]:
-    tree.insert(element)
-  target = choice(tree_elements)
-  message = f'Tree of size: {tree_size}. \nValues range: {min(tree_elements)} - {max(tree_elements)}. Elements: {tree_elements}.\nTarget value: {target}.'
-  messages.append(message)
-  strategies = ['random', 'breadth_first', 'depth_first']
-  elapsed_times = []
-  for strategy in strategies:
-    elapsed_time = time_search(target, strategy, tree, max_nodes=None, show_log=False)
-    elapsed_times.append((strategy, elapsed_time))
-  sorted_times = sorted(elapsed_times, key=lambda x: x[1])
-  messages.append('Ranking of search algorithm search performance:')
-  for strategy, time in sorted_times:
-    message = f'\t{time if time < 999 else "failed search"}: {strategy}'
-    messages.append(message)
-  logger.info('\n'.join(messages))
-  return tree
-
 # logging_level='WARNING'
 logging_level='INFO'
 # logging_level='DEBUG'
@@ -306,4 +255,3 @@ logging_level='INFO'
 # random_search_result = tree.contains_value(
 #   target, 'random', max_nodes=max_nodes, show_log=True
 #   )
-tree = compare_search_algorithms(10000)
