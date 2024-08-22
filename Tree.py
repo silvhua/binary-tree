@@ -1,5 +1,5 @@
 import sys
-sys.path.append(r"../utils")
+sys.path.append(r"./utils")
 from Custom_Logger import *
 from copy import copy 
 from random import randint, choice
@@ -25,6 +25,13 @@ class Tree:
       self.messages = [message]
 
   def insert(self, value, show_log=False):
+    """
+    "Part 1 a) Insert a node to the binary tree"
+
+    This assumes that the tree is a binary search tree, where :
+    - each node's left child has a lower value
+    - each node's right child has a higher value
+    """
     if self.value == None:
       self.value = value
       self.logger.info(f'Inserted value {value} to node.')
@@ -49,6 +56,13 @@ class Tree:
     return self
   
   def search(self, value, root=None, parent=None, generation=0, show_log=False):
+    """
+    Search for a node with the given value.
+
+    This assumes that the tree is a binary search tree, where :
+    - each node's left child has a lower value
+    - each node's right child has a higher value
+    """
     if root == None:
       root = copy(self)
       self.directions_dict[value] = []
@@ -83,6 +97,9 @@ class Tree:
     return False
   
   def swap(self, value1, value2, show_log=False):
+    """
+    Part 1 b)	Swap two nodes on the binary tree
+    """
     subtree1 = self.search(value1, show_log=False)
     subtree2 = self.search(value2, show_log=False)
     self.replace(value1, value2, show_log=False)
@@ -120,6 +137,9 @@ class Tree:
     return found
 
   def search_unsorted(self, value, strategy, root=None, generation=0, show_log=False):
+    """
+    Given a tree whose elements are not ordered, search for a node with a given value.
+    """
     if root == None:
       root = copy(self)
       self.directions_dict[value] = []
@@ -170,10 +190,18 @@ class Tree:
             elements.append(node.right)
 
   def random_search(self, value, max_nodes=100, show_log=False):
+    """
+    Traverse tree randomly until a node with the given value is found.
+
+    Arguments:
+      - value (int): Value to search for.
+      - max_nodes (int): Max number of nodes to traverse to search for the value.
+          If None, the search will continue indefinitely until the given value is found.
+      - show_log (bool): Whether or not to show log statements to the console.
+    """
     n_generations_to_traverse = randint(1, max_nodes) if max_nodes else 0
     message = f'Traversing {n_generations_to_traverse if max_nodes else "infinite"} generations to search for {value}.'
     self.messages.append(message)
-    # route = []
     visited_nodes_values = []
     generation = 0
     current_generation = 0
@@ -206,7 +234,7 @@ class Tree:
 
 def inorder(tree, result=None):
   """
-  Sort the elements of the tree. 
+  Part 1 c)	An algorithm to Sort the binary tree (https://en.wikipedia.org/wiki/Tree_sort)
   """
   if result == None:
     result = []
@@ -227,31 +255,37 @@ Right child value: {node.right.value if node.right else None}.
   """
   print(message)
 
-# logging_level='WARNING'
-logging_level='INFO'
-# logging_level='DEBUG'
+if __name__ == '__main__':
 
-# root_value = 10
-# target = 180
-# max_nodes = 200
+  # Set up the initial parameters
+  logging_level='INFO'
+  root_value = 10 
+  target = 18
+  max_nodes = None
 
-# tree = Tree(root_value, logging_level=logging_level)
-# tree.insert(5)
-# tree.insert(15)
-# tree.insert(12)
-# tree.insert(18)
+  # a) Insert a node to the binary tree
+  tree = Tree(root_value, logging_level=logging_level)
+  tree.insert(5)
+  tree.insert(15)
+  tree.insert(12)
+  tree.insert(18)
+  print_node(tree)
+  search_result = tree.search(target, show_log=True)
 
-# print_node(tree)
-# inorder(tree)
-# search_result = tree.search(target, show_log=True)
-# swap_result = tree.swap(12, 15, show_log=True)
+  # b)	Swap two nodes on the binary tree
+  swap_result = tree.swap(12, 15, show_log=True)
 
-# df_search_result = tree.contains_value(
-#   target, 'depth_first', show_log=True
-#   )
-# bf_search_result = tree.contains_value(
-#   target, 'breadth_first', show_log=True
-#   )
-# random_search_result = tree.contains_value(
-#   target, 'random', max_nodes=max_nodes, show_log=True
-#   )
+  # c)	An algorithm to Sort the binary tree (https://en.wikipedia.org/wiki/Tree_sort)
+  inorder(tree)
+
+
+
+  # df_search_result = tree.contains_value(
+  #   target, 'depth_first', show_log=True
+  #   )
+  # bf_search_result = tree.contains_value(
+  #   target, 'breadth_first', show_log=True
+  #   )
+  # random_search_result = tree.contains_value(
+  #   target, 'random', max_nodes=max_nodes, show_log=True
+  #   )
