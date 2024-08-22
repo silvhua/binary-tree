@@ -6,8 +6,8 @@ from random import randint, choice
 from time import time
 
 class Tree:
-  def __init__(self, value, parent=None, messages=None, logger=None, logging_level='INFO'):
-    self.logger = Custom_Logger(level=logging_level) if logger == None else logger
+  def __init__(self, value, parent=None, messages=None, logger=None, logging_level='INFO', logger_name='Tree Logger'):
+    self.logger = Custom_Logger(logger_name=logger_name, level=logging_level) if logger == None else logger
     self.left = None
     self.right = None
     self.value = value
@@ -224,7 +224,6 @@ class Tree:
     message = f'\n{len(visited_nodes_values)} nodes visited:\n' + ' '.join([str(value) for value in visited_nodes_values])
     self.messages.append(message)
 
-
   def report_value_found(self,value, node, generation=None, show_log=False):
     message = f'Value {value} found at generation {generation} in parent {node.value}.'
     self.value_present[value] = True
@@ -255,13 +254,59 @@ Right child value: {node.right.value if node.right else None}.
   """
   print(message)
 
+def delete_node(value, tree, logging_level='INFO', show_log=True, logger_name='Delete Node Logger'):
+  """
+  d) Remove a node from the binary tree without breaking the remaining tree structure
+
+  This assumes that the tree is a binary search tree, where :
+  - each node's left child has a lower value
+  - each node's right child has a higher value
+  """
+  def next_in_line(node):
+    logger = Custom_Logger(level=logging_level, logger_name=logger_name)
+    next = node.right
+    while (next != None) & (next.left != None):
+      next = next.left
+    message = f'Removed node {node.value if node else "null"} and replaced with {next.value if next else "null"}.'
+    messages.append(message)
+
+    if show_log:
+      logger.info(message)
+    return next
+  
+  messages = []
+  if tree == None:
+    return tree
+  if tree.value == value:
+    # Return right child if no left child
+    if tree.left == None: 
+      return tree.right
+    
+    # Return left child if no right child
+    elif tree.right == None:
+      return tree.left
+    
+    # Need to connect the node's children to the rest of the tree once it is removed
+    else: 
+      next = next_in_line(tree)
+      tree.value = next.value
+      tree.right = delete_node(next.value, tree.right)
+  elif tree.value > value:
+    tree.left = delete_node(value, tree.left)
+  else:
+    tree.right = delete_node(value, tree.right)
+    
+  return tree
+  
+
 if __name__ == '__main__':
 
   # Set up the initial parameters
   logging_level='INFO'
   root_value = 10 
-  target = 18
+  target = 15
   max_nodes = None
+  show_log=True
 
   # a) Insert a node to the binary tree
   tree = Tree(root_value, logging_level=logging_level)
@@ -269,15 +314,27 @@ if __name__ == '__main__':
   tree.insert(15)
   tree.insert(12)
   tree.insert(18)
-  print_node(tree)
-  search_result = tree.search(target, show_log=True)
+  # print_node(tree)
+  # search_result = tree.search(target, show_log=show_log)
 
   # b)	Swap two nodes on the binary tree
   swap_result = tree.swap(12, 15, show_log=True)
 
   # c)	An algorithm to Sort the binary tree (https://en.wikipedia.org/wiki/Tree_sort)
-  inorder(tree)
+  sorted_elements = inorder(tree)
+  message = f'Tree traversal results: ' + ' '.join([str(element) for element in sorted_elements])
+  tree.logger.info(message)
 
+  # d) Remove a node from the binary tree without breaking the remaining tree structure
+  tree2 = Tree(root_value, logging_level=logging_level)
+  tree2.insert(5)
+  tree2.insert(15)
+  tree2.insert(12)
+  tree2.insert(18)
+  tree2_after_removal = delete_node(target, tree2)
+  sorted_elements_after_removal = inorder(tree2)
+  message = f'Tree traversal results after removing node {target}: ' + ' '.join([str(element) for element in sorted_elements_after_removal])
+  tree2.logger.info(message)
 
 
   # df_search_result = tree.contains_value(
