@@ -1,5 +1,6 @@
 import sys
 sys.path.append(r"./utils")
+sys.path.append(r"c:\\Users\\silvh\\OneDrive\\lighthouse\\portfolio-projects\\binary-tree\\utils") # required to run script in jupyter terminal
 from Custom_Logger import *
 from copy import copy 
 from random import randint, choice
@@ -121,6 +122,22 @@ class Tree:
       self.logger.info(' '.join(self.messages))
     
   def contains_value(self, value, strategy='depth_first', max_nodes=100, show_log=False):
+    """
+    "a)	Implement a brute force search algorithm
+    b)	implement a depth-first search algorithm
+    c)	implement a breadth first search algorithm"
+
+    Given a tree whose elements are not ordered, search for a node with a given value.
+
+    Parameters:
+      - value (int): Node value to search for.
+      - strategy (str): Algorithm to use. Can be one of the following:
+        - 'random': Brute force search using random traversal.
+        - 'depth_first' or 'dfs': depth-first search.
+        - 'breadth_first' or 'bfs': breadth-first search.
+      - max_nodes (int): Maximum nodes to search when using the random search strategy.
+          If None, then the search continues indefinitely until the target value is found.
+    """
     if strategy == 'random':
       self.random_search(value, max_nodes, show_log)
     else:
@@ -139,6 +156,15 @@ class Tree:
   def search_unsorted(self, value, strategy, root=None, generation=0, show_log=False):
     """
     Given a tree whose elements are not ordered, search for a node with a given value.
+
+    Parameters:
+      - value (int): Node value to search for.
+      - strategy (str): Algorithm to use. Can be one of the following:
+        - 'random': Brute force search using random traversal.
+        - 'depth_first' or 'dfs': depth-first search.
+        - breadth_first' or 'bfs': breadth-first search.
+      - root: Root/parent node of the tree.
+      - generation (int): Generation of the tree, where 0 = root node.
     """
     if root == None:
       root = copy(self)
@@ -197,6 +223,7 @@ class Tree:
       - value (int): Value to search for.
       - max_nodes (int): Max number of nodes to traverse to search for the value.
           If None, the search will continue indefinitely until the given value is found.
+          Setting the value to a high integer is recommended to avoid searching indefinitely.
       - show_log (bool): Whether or not to show log statements to the console.
     """
     n_generations_to_traverse = randint(1, max_nodes) if max_nodes else 0
