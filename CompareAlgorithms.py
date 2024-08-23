@@ -1,13 +1,12 @@
 import sys
 sys.path.append(r"./utils")
-sys.path.append(r"c:\\Users\\silvh\\OneDrive\\lighthouse\\portfolio-projects\\binary-tree\\utils") # required to run script in jupyter terminal
+sys.path.append(r"../") # required to run script in jupyter terminal
 from Tree import *
 from Custom_Logger import *
 from copy import copy 
 from random import randint, choice
 from time import time
 import pandas as pd
-
 
 class CompareAlgorithms:
   """
@@ -17,9 +16,10 @@ class CompareAlgorithms:
 
   def __init__(self, tree_size, logging_level='INFO', show_log=False):
     self.logging_level = logging_level
-    self.strategies = ['random', 'breadth_first', 'depth_first']
+    self.strategies = ['random', 'binary', 'breadth_first', 'depth_first']
     self.results_dict = {
       'random': [],
+      'binary': [],
       'breadth_first': [], 
       'depth_first': [],
       'fastest': []
@@ -94,7 +94,7 @@ class CompareAlgorithms:
     results_df = pd.DataFrame(self.results_dict)
     results_df.index.name = 'trial'
     print('\nResults sorted by average elapsed time:')
-    print(results_df[['random', 'breadth_first', 'depth_first']].mean().sort_values())
+    print(results_df[['random', 'binary', 'breadth_first', 'depth_first']].mean().sort_values())
     print('\nCount of fastest algorithm:')
     print(results_df['fastest'].value_counts())
     return results_df
@@ -105,7 +105,7 @@ if __name__ == '__main__':
   ##################################################
   # UPDATE THIS IF NEEDED TO REDUCE RUN TIME: 
   # #Number of trials to perform
-  n_trials = 50
+  n_trials = 30
 
   # Maximum number of nodes to traverse for brute force (random) search algorithm 
   max_nodes = 1000000

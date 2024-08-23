@@ -70,8 +70,9 @@ class Tree:
     message = f'\n\tSearching for {value} in node {root.value}.'
     self.messages.append(message)
     if root.value == value:
-      message = f'Value {value} found at generation {generation} in {f"parent {parent}" if parent else "root"}.'
-      self.messages.append(message)
+      self.report_value_found(value, root, generation, show_log)
+      # message = f'Value {value} found at generation {generation} in {f"parent {parent}" if parent else "root"}.'
+      # self.messages.append(message)
       self.generation_dict[value] = generation
       if show_log:
         self.logger.info(' '.join(self.messages))
@@ -140,6 +141,8 @@ class Tree:
     """
     if strategy == 'random':
       self.random_search(value, max_nodes, show_log)
+    elif strategy == 'binary':
+      self.search(value)
     else:
       self.search_unsorted(value, strategy, show_log=show_log)
     if self.value_present.get(value):
@@ -272,59 +275,6 @@ def inorder(tree, result=None):
   # Sort the list of elements in case the tree is not a binary search tree where the node value is always greater than the left child and less than the right child
   result = sorted(result)
   return result
-
-def print_node(node):
-  message = f"""
-Node value: {node.value}. 
-Left child value: {node.left.value if node.left else None}. 
-Right child value: {node.right.value if node.right else None}.
-  """
-  print(message)
-
-def delete_node(value, tree, logging_level='INFO', show_log=True, logger_name='Delete Node Logger'):
-  """
-  d) Remove a node from the binary tree without breaking the remaining tree structure
-
-  This assumes that the tree is a binary search tree, where :
-  - each node's left child has a lower value
-  - each node's right child has a higher value
-  """
-  def next_in_line(node):
-    logger = Custom_Logger(level=logging_level, logger_name=logger_name)
-    next = node.right
-    while (next != None) & (next.left != None):
-      next = next.left
-    message = f'Removed node {node.value if node else "null"} and replaced with {next.value if next else "null"}.'
-    messages.append(message)
-
-    if show_log:
-      logger.info(message)
-    return next
-  
-  messages = []
-  if tree == None:
-    return tree
-  if tree.value == value:
-    # Return right child if no left child
-    if tree.left == None: 
-      return tree.right
-    
-    # Return left child if no right child
-    elif tree.right == None:
-      return tree.left
-    
-    # Need to connect the node's children to the rest of the tree once it is removed
-    else: 
-      next = next_in_line(tree)
-      tree.value = next.value
-      tree.right = delete_node(next.value, tree.right)
-  elif tree.value > value:
-    tree.left = delete_node(value, tree.left)
-  else:
-    tree.right = delete_node(value, tree.right)
-    
-  return tree
-  
 
 if __name__ == '__main__':
 
