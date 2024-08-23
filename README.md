@@ -94,7 +94,7 @@ Experiment parameters:
 
 ### All algorithms
 
-The binary search tree algorithm consistently performed the best out of all algorithms. 
+The binary search tree algorithm consistently performed the best out of all algorithms. Below are the mean search times:
 
 
 
