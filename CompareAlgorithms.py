@@ -6,6 +6,7 @@ from Custom_Logger import *
 from copy import copy 
 from random import randint, choice
 from time import time
+import numpy as np
 import pandas as pd
 
 class CompareAlgorithms:
@@ -41,7 +42,7 @@ class CompareAlgorithms:
     logger = Custom_Logger(f'{strategy}_logger', level=self.logging_level)
     self.tree.value_present[target] = False
     start_time = time()
-    print(f'Starting search for {strategy} strategy (timestamp: {start_time})')
+    # print(f'Starting search for {strategy} strategy (timestamp: {start_time})')
     search_result = self.tree.contains_value(
       target, strategy, max_nodes=max_nodes, show_log=False
     )
@@ -50,8 +51,9 @@ class CompareAlgorithms:
       message = f'\nElapsed time for search: {elapsed_time}.'
     else:
       message = f'\nFailed to find {target} using "{strategy}" algorithm.'
+      print(message)
       # If target value is not found, make elapsed time larger so it always ranks last compared with other algorithms
-      elapsed_time += 999 
+      elapsed_time = np.nan 
     if self.show_log:
       logger.info(message)
     return elapsed_time 
@@ -74,7 +76,7 @@ class CompareAlgorithms:
       elapsed_time = self.time_search(target, strategy, max_nodes=max_nodes)
       elapsed_times.append((strategy, elapsed_time))
       self.results_dict[strategy].append(elapsed_time)
-    sorted_times = sorted(elapsed_times, key=lambda x: x[1])
+    sorted_times = sorted(elapsed_times, key=lambda x: x[1] if not np.isnan(x[1]) else float('inf'))
     fastest = sorted_times[0][0]
     self.results_dict['fastest'].append(fastest)
     if self.show_log:
@@ -88,7 +90,6 @@ class CompareAlgorithms:
     on the resulting data 
     """
     message = f'Running {n_trials} trials using trees with {self.tree_size} elements each.'
-    print(message)
     for trial in range(n_trials):
       self.compare_search_algorithms(max_nodes=max_nodes)
     results_df = pd.DataFrame(self.results_dict)
