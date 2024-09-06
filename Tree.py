@@ -276,6 +276,50 @@ def inorder(tree, result=None):
   result = sorted(result)
   return result
 
+def delete_node(value, tree, logging_level='INFO', show_log=True, logger_name='Delete Node Logger'):
+  """
+  d) Remove a node from the binary tree without breaking the remaining tree structure
+  This assumes that the tree is a binary search tree, where :
+  - each node's left child has a lower value
+  - each node's right child has a higher value
+  """
+  def next_in_line(node):
+    logger = Custom_Logger(level=logging_level, logger_name=logger_name)
+    next = node.right
+    while (next != None) & (next.left != None):
+      next = next.left
+    message = f'Removed node {node.value if node else "null"} and replaced with {next.value if next else "null"}.'
+    messages.append(message)
+
+    if show_log:
+      logger.info(message)
+    return next
+
+  messages = []
+  if tree == None:
+    return tree
+  if tree.value == value:
+    # Return right child if no left child
+    if tree.left == None: 
+      return tree.right
+
+    # Return left child if no right child
+    elif tree.right == None:
+      return tree.left
+
+    # Need to connect the node's children to the rest of the tree once it is removed
+    else: 
+      next = next_in_line(tree)
+      tree.value = next.value
+      tree.right = delete_node(next.value, tree.right)
+  elif tree.value > value:
+    tree.left = delete_node(value, tree.left)
+  else:
+    tree.right = delete_node(value, tree.right)
+
+  return tree
+
+
 if __name__ == '__main__':
 
   # Set up the initial parameters
